@@ -49,11 +49,26 @@
   transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
+.primary-btn {
+  border-radius: 10px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #ffffff;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
 .ghost-btn:hover {
   background: #f3f4f6;
 }
 
 .ghost-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.primary-btn:focus-visible {
   outline: 2px solid #0f172a;
   outline-offset: 2px;
 }
@@ -89,6 +104,12 @@
   margin: 0.95rem 0 0;
   color: #4b5563;
   line-height: 1.45;
+}
+
+.details-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 @media (max-width: 640px) {

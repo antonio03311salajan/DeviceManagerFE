@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { DeviceService } from '../../services/device.service';
-import { Device } from '../../models/device.model';
+import { Device, DeviceCreate } from '../../models/device.model';
 import { DeviceDetailsModalComponent } from '../device-details-modal/device-details-modal.component';
+import { DeviceFormModalComponent } from '../device-form-modal/device-form-modal.component';
 
 @Component({
   selector: 'app-device-list',
-  imports: [CommonModule, DeviceDetailsModalComponent],
+  imports: [CommonModule, DeviceDetailsModalComponent, DeviceFormModalComponent],
   templateUrl: './device-list.component.html',
   styleUrl: './device-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -20,6 +21,8 @@ export class DeviceListComponent {
   readonly loading = signal(true);
   readonly errorMessage = signal('');
   readonly selectedDevice = signal<Device | null>(null);
+  readonly formMode = signal<'create' | 'edit' | null>(null);
+  readonly editingDevice = signal<Device | null>(null);
   readonly totalDevices = computed(() => this.devices().length);
 
   constructor() {
@@ -46,7 +49,9 @@ export class DeviceListComponent {
   }
 
   addNewDevice(): void {
-
+    this.selectedDevice.set(null);
+    this.editingDevice.set(null);
+    this.formMode.set('create');
   }
 
   openDetails(device: Device): void {
@@ -55,6 +60,50 @@ export class DeviceListComponent {
 
   closeDetails(): void {
     this.selectedDevice.set(null);
+  }
+
+  openEditForm(device: Device): void {
+    this.closeDetails();
+    this.editingDevice.set(device);
+    this.formMode.set('edit');
+  }
+
+  closeDeviceForm(): void {
+    this.formMode.set(null);
+    this.editingDevice.set(null);
+  }
+
+  saveDevice(payload: DeviceCreate): void {
+    if (this.formMode() === 'edit' && this.editingDevice()) {
+      const id = this.editingDevice()!.deviceId;
+
+      this.deviceService
+        .updateDevice(id, payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.closeDeviceForm();
+            this.loadDevices();
+          },
+          error: () => {
+            this.errorMessage.set('Could not update the selected device.');
+          }
+        });
+      return;
+    }
+
+    this.deviceService
+      .createDevice(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.closeDeviceForm();
+          this.loadDevices();
+        },
+        error: () => {
+          this.errorMessage.set('Could not create the device.');
+        }
+      });
   }
 
   removeDevice(id: string, event?: Event): void {

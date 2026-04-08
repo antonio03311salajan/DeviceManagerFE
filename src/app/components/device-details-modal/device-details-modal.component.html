@@ -41,5 +41,9 @@
     @if (device().description) {
       <p class="details-description">{{ device().description }}</p>
     }
+
+    <footer class="details-actions">
+      <button type="button" class="primary-btn" (click)="onEdit()">Edit Device</button>
+    </footer>
   </section>
 </div>
