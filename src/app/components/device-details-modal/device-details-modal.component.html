@@ -1,0 +1,45 @@
+<div class="modal-backdrop" (click)="onClose()" aria-hidden="true">
+  <section
+    class="details-modal"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Device details for ' + device().name"
+    (click)="onContentClick($event)"
+  >
+    <header class="modal-header">
+      <h2>{{ device().name }}</h2>
+      <button type="button" class="ghost-btn" (click)="onClose()" aria-label="Close details">Close</button>
+    </header>
+
+    <dl class="details-grid">
+      <div>
+        <dt>Manufacturer</dt>
+        <dd>{{ device().manufacturer }}</dd>
+      </div>
+      <div>
+        <dt>Type</dt>
+        <dd>{{ device().type }}</dd>
+      </div>
+      <div>
+        <dt>Operating system</dt>
+        <dd>{{ device().os }} {{ device().osVersion }}</dd>
+      </div>
+      <div>
+        <dt>Processor</dt>
+        <dd>{{ device().processor }}</dd>
+      </div>
+      <div>
+        <dt>RAM</dt>
+        <dd>{{ device().ram ?? '-' }} GB</dd>
+      </div>
+      <div>
+        <dt>Device ID</dt>
+        <dd>{{ device().deviceId }}</dd>
+      </div>
+    </dl>
+
+    @if (device().description) {
+      <p class="details-description">{{ device().description }}</p>
+    }
+  </section>
+</div>
