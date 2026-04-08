@@ -1,0 +1,63 @@
+<div class="modal-backdrop" (click)="onCancel()" aria-hidden="true">
+  <section class="form-modal" role="dialog" aria-modal="true" [attr.aria-label]="title()" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>{{ title() }}</h2>
+      <button type="button" class="ghost-btn" (click)="onCancel()">Close</button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-grid" novalidate>
+      <label>
+        <span>Name</span>
+        <input type="text" formControlName="name" />
+      </label>
+
+      <label>
+        <span>Manufacturer</span>
+        <input type="text" formControlName="manufacturer" />
+      </label>
+
+      <label>
+        <span>Type</span>
+        <input type="text" formControlName="type" />
+      </label>
+
+      <label>
+        <span>Operating system</span>
+        <input type="text" formControlName="os" />
+      </label>
+
+      <label>
+        <span>OS version</span>
+        <input type="text" formControlName="osVersion" />
+      </label>
+
+      <label>
+        <span>Processor</span>
+        <input type="text" formControlName="processor" />
+      </label>
+
+      <label>
+        <span>RAM (GB)</span>
+        <input type="number" min="1" step="1" formControlName="ram" />
+      </label>
+
+      <label class="full-row">
+        <span>Description</span>
+        <textarea rows="3" formControlName="description"></textarea>
+      </label>
+
+      @if (duplicateError()) {
+        <p class="error-msg">{{ duplicateError() }}</p>
+      }
+
+      @if (form.invalid && (form.touched || form.dirty)) {
+        <p class="error-msg">All fields are required and cannot be empty.</p>
+      }
+
+      <div class="actions full-row">
+        <button type="button" class="ghost-btn" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="primary-btn">{{ submitLabel() }}</button>
+      </div>
+    </form>
+  </section>
+</div>

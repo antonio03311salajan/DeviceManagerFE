@@ -13,6 +13,7 @@ import { Device } from '../../models/device.model';
 export class DeviceDetailsModalComponent {
   readonly device = input.required<Device>();
   readonly close = output<void>();
+  readonly edit = output<Device>();
 
   onClose(): void {
     this.close.emit();
@@ -20,5 +21,9 @@ export class DeviceDetailsModalComponent {
 
   onContentClick(event: Event): void {
     event.stopPropagation();
+  }
+
+  onEdit(): void {
+    this.edit.emit(this.device());
   }
 }

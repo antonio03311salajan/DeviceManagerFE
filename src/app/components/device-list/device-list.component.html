@@ -58,6 +58,16 @@
   }
 
   @if (selectedDevice(); as device) {
-    <app-device-details-modal [device]="device" (close)="closeDetails()" />
+    <app-device-details-modal [device]="device" (close)="closeDetails()" (edit)="openEditForm($event)" />
+  }
+
+  @if (formMode(); as mode) {
+    <app-device-form-modal
+      [mode]="mode"
+      [initialDevice]="editingDevice()"
+      [existingDevices]="devices()"
+      (save)="saveDevice($event)"
+      (cancel)="closeDeviceForm()"
+    />
   }
 </main>

@@ -20,6 +20,10 @@ export class DeviceService {
       .post<Device>(this.apiUrl, device);
   }
 
+  updateDevice(id: string, device: DeviceCreate): Observable<Device> {
+    return this.http.put<Device>(`${this.apiUrl}/${id}`, device);
+  }
+
   deleteDevice(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
