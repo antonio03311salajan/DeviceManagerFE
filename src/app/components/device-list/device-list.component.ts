@@ -3,10 +3,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { DeviceService } from '../../services/device.service';
 import { Device } from '../../models/device.model';
+import { DeviceDetailsModalComponent } from '../device-details-modal/device-details-modal.component';
 
 @Component({
   selector: 'app-device-list',
-  imports: [CommonModule],
+  imports: [CommonModule, DeviceDetailsModalComponent],
   templateUrl: './device-list.component.html',
   styleUrl: './device-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -18,6 +19,7 @@ export class DeviceListComponent {
   readonly devices = signal<Device[]>([]);
   readonly loading = signal(true);
   readonly errorMessage = signal('');
+  readonly selectedDevice = signal<Device | null>(null);
   readonly totalDevices = computed(() => this.devices().length);
 
   constructor() {
@@ -44,10 +46,20 @@ export class DeviceListComponent {
   }
 
   addNewDevice(): void {
-    
+
   }
 
-  removeDevice(id: string): void {
+  openDetails(device: Device): void {
+    this.selectedDevice.set(device);
+  }
+
+  closeDetails(): void {
+    this.selectedDevice.set(null);
+  }
+
+  removeDevice(id: string, event?: Event): void {
+    event?.stopPropagation();
+
     if (!window.confirm('Delete this device?')) {
       return;
     }
@@ -60,6 +72,10 @@ export class DeviceListComponent {
           this.devices.update((currentDevices) =>
             currentDevices.filter((device) => device.deviceId !== id)
           );
+
+          if (this.selectedDevice()?.deviceId === id) {
+            this.closeDetails();
+          }
         },
         error: () => {
           this.errorMessage.set('Could not delete the selected device.');

@@ -2,7 +2,6 @@
   <header class="topbar">
     <div class="heading-block">
       <h1 id="devices-title">My Devices</h1>
-      <p>All your devices in one clean and simple view.</p>
     </div>
 
     <button type="button" class="primary-btn" (click)="addNewDevice()">
@@ -26,15 +25,15 @@
     } @else {
       <ul class="device-list" role="list">
         @for (device of devices(); track device.deviceId) {
-          <li class="device-item">
+          <li
+            class="device-item"
+            tabindex="0"
+            (click)="openDetails(device)"
+            (keydown.enter)="openDetails(device)"
+            (keydown.space)="openDetails(device); $event.preventDefault()"
+          >
             <div class="device-main">
               <h2>{{ device.name }}</h2>
-              <p class="device-meta">{{ device.manufacturer }} • {{ device.type }}</p>
-              <p class="device-meta">OS: {{ device.os }} {{ device.osVersion }}</p>
-              <p class="device-meta">CPU: {{ device.processor }} • RAM: {{ device.ram ?? '-' }} GB</p>
-              @if (device.description) {
-                <p class="device-description">{{ device.description }}</p>
-              }
             </div>
 
             <div class="device-actions">
@@ -42,7 +41,7 @@
               <button
                 type="button"
                 class="ghost-btn danger-btn"
-                (click)="removeDevice(device.deviceId)"
+                (click)="removeDevice(device.deviceId, $event)"
                 [attr.aria-label]="'Remove device ' + device.name"
               >
                 Remove
@@ -56,5 +55,9 @@
 
   @if (!loading() && !errorMessage()) {
     <p class="count-label">{{ totalDevices() }} devices</p>
+  }
+
+  @if (selectedDevice(); as device) {
+    <app-device-details-modal [device]="device" (close)="closeDetails()" />
   }
 </main>
