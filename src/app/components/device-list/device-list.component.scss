@@ -1,0 +1,239 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 500px at 80% -20%, rgba(29, 78, 216, 0.08), transparent),
+    radial-gradient(900px 350px at 5% -20%, rgba(22, 163, 74, 0.08), transparent),
+    #f7f8fa;
+}
+
+.device-home {
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text-main: #111827;
+  --text-soft: #6b7280;
+  --accent: #111827;
+  --danger: #b91c1c;
+
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+  color: var(--text-main);
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+@media (max-width: 900px) {
+  .device-home {
+    padding: 2rem 1rem;
+  }
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.heading-block h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.heading-block p {
+  margin: 0.45rem 0 0;
+  color: var(--text-soft);
+}
+
+.content-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.75rem;
+}
+
+.device-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.device-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: background-color 160ms ease;
+}
+
+.device-item + .device-item {
+  border-top: 1px solid #f3f4f6;
+}
+
+.device-item:hover {
+  background: #fafafa;
+}
+
+.device-main h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.device-main p {
+  margin: 0.3rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.device-meta {
+  line-height: 1.35;
+}
+
+.device-description {
+  margin-top: 0.45rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.device-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tag {
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: #f9fafb;
+}
+
+.primary-btn,
+.ghost-btn {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.primary-btn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.primary-btn:hover {
+  background: #000000;
+}
+
+.ghost-btn {
+  background: #ffffff;
+  color: var(--text-main);
+}
+
+.ghost-btn:hover {
+  background: #f3f4f6;
+}
+
+.danger-btn {
+  color: var(--danger);
+  border-color: #fecaca;
+}
+
+.danger-btn:hover {
+  background: #fef2f2;
+}
+
+.primary-btn:focus-visible,
+.ghost-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.state {
+  margin: 0;
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.error-state {
+  color: var(--danger);
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+}
+
+.count-label {
+  margin: 0.8rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.86rem;
+}
+
+@media (max-width: 640px) {
+  .device-home {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primary-btn {
+    width: 100%;
+  }
+
+  .content-card {
+    padding: 0.5rem;
+  }
+
+  .device-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.85rem;
+  }
+
+  .device-main,
+  .device-main h2,
+  .device-main p {
+    width: 100%;
+  }
+
+  .device-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 420px) {
+  .heading-block h1 {
+    font-size: 1.35rem;
+  }
+
+  .device-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .tag,
+  .danger-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,0 +1,60 @@
+<main class="device-home" aria-labelledby="devices-title">
+  <header class="topbar">
+    <div class="heading-block">
+      <h1 id="devices-title">My Devices</h1>
+      <p>All your devices in one clean and simple view.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="addNewDevice()">
+      Add New Device
+    </button>
+  </header>
+
+  <section class="content-card" aria-live="polite">
+    @if (loading()) {
+      <p class="state">Loading devices...</p>
+    } @else if (errorMessage()) {
+      <div class="state error-state">
+        <p>{{ errorMessage() }}</p>
+        <button type="button" class="ghost-btn" (click)="loadDevices()">Try Again</button>
+      </div>
+    } @else if (devices().length === 0) {
+      <div class="state empty-state">
+        <p>No devices yet.</p>
+        <button type="button" class="ghost-btn" (click)="addNewDevice()">Create First Device</button>
+      </div>
+    } @else {
+      <ul class="device-list" role="list">
+        @for (device of devices(); track device.deviceId) {
+          <li class="device-item">
+            <div class="device-main">
+              <h2>{{ device.name }}</h2>
+              <p class="device-meta">{{ device.manufacturer }} • {{ device.type }}</p>
+              <p class="device-meta">OS: {{ device.os }} {{ device.osVersion }}</p>
+              <p class="device-meta">CPU: {{ device.processor }} • RAM: {{ device.ram ?? '-' }} GB</p>
+              @if (device.description) {
+                <p class="device-description">{{ device.description }}</p>
+              }
+            </div>
+
+            <div class="device-actions">
+              <span class="tag">{{ device.type }}</span>
+              <button
+                type="button"
+                class="ghost-btn danger-btn"
+                (click)="removeDevice(device.deviceId)"
+                [attr.aria-label]="'Remove device ' + device.name"
+              >
+                Remove
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  @if (!loading() && !errorMessage()) {
+    <p class="count-label">{{ totalDevices() }} devices</p>
+  }
+</main>
