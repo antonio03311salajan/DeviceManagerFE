@@ -38,11 +38,23 @@
       </div>
     </dl>
 
-    @if (device().description) {
-      <p class="details-description">{{ device().description }}</p>
+    @if (descriptionToDisplay()) {
+      <p class="details-description">{{ descriptionToDisplay() }}</p>
+    }
+
+    @if (generateError()) {
+      <p class="details-error" role="alert">{{ generateError() }}</p>
     }
 
     <footer class="details-actions">
+      <button
+        type="button"
+        class="ghost-btn"
+        (click)="onGenerateDescription()"
+        [disabled]="isGenerating()"
+      >
+        {{ isGenerating() ? 'Generating...' : 'Generate Description' }}
+      </button>
       <button type="button" class="primary-btn" (click)="onEdit()">Edit Device</button>
     </footer>
   </section>

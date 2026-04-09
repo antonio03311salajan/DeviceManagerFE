@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Device, DeviceCreate } from '../models/device.model';
+import { Observable, map } from 'rxjs';
+import { Device, DeviceCreate, DeviceDescriptionRequest } from '../models/device.model';
+
+type GeneratedDescriptionResponse = {
+  generatedDescription: string;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +28,17 @@ export class DeviceService {
     return this.http.put<Device>(`${this.apiUrl}/${id}`, device);
   }
 
+  generateDescription(payload: DeviceDescriptionRequest): Observable<string> {
+    return this.http
+      .post<GeneratedDescriptionResponse>(`${this.apiUrl}/generate-description`, payload)
+      .pipe(map((response) => this.extractGeneratedDescription(response)));
+  }
+
   deleteDevice(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  private extractGeneratedDescription(response: GeneratedDescriptionResponse): string {
+    return response.generatedDescription.trim();
   }
 }

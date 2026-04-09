@@ -73,6 +73,12 @@
   outline-offset: 2px;
 }
 
+.ghost-btn:disabled,
+.primary-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .details-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -106,8 +112,15 @@
   line-height: 1.45;
 }
 
+.details-error {
+  margin: 0.8rem 0 0;
+  color: #b91c1c;
+  font-size: 0.88rem;
+}
+
 .details-actions {
   display: flex;
+  gap: 0.65rem;
   justify-content: flex-end;
   margin-top: 1rem;
 }
