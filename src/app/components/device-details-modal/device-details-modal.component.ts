@@ -23,6 +23,27 @@ export class DeviceDetailsModalComponent {
   readonly generatedDescription = signal<string>('');
   readonly generateError = signal<string>('');
   readonly descriptionToDisplay = computed(() => this.generatedDescription() || this.device().description);
+  readonly assignmentStatus = computed<'Assigned' | 'Available'>(() => {
+  const currentDevice = this.device();
+    return Boolean(currentDevice.assignedUserId || currentDevice.assignedUserName?.trim())
+      ? 'Assigned'
+      : 'Available';
+  });
+  readonly assignedUserDisplay = computed(() => {
+    const currentDevice = this.device();
+    const assignedUserName = currentDevice.assignedUserName?.trim() ?? '';
+    const assignedUserId = currentDevice.assignedUserId?.trim() ?? '';
+
+    if (assignedUserName) {
+      return assignedUserName;
+    }
+
+    if (assignedUserId) {
+      return 'Assigned user (name unavailable)';
+    }
+
+    return 'Not assigned';
+  });
 
   onClose(): void {
     this.close.emit();

@@ -23,6 +23,7 @@ export class DeviceListComponent {
   readonly selectedDevice = signal<Device | null>(null);
   readonly formMode = signal<'create' | 'edit' | null>(null);
   readonly editingDevice = signal<Device | null>(null);
+  readonly activeAssignmentDeviceId = signal<string | null>(null);
   readonly totalDevices = computed(() => this.devices().length);
 
   constructor() {
@@ -128,6 +129,103 @@ export class DeviceListComponent {
         },
         error: () => {
           this.errorMessage.set('Could not delete the selected device.');
+        }
+      });
+  }
+
+  assignDevice(device: Device, event?: Event): void {
+    event?.stopPropagation();
+
+    if (this.isDeviceAssigned(device) || this.activeAssignmentDeviceId() === device.deviceId) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.activeAssignmentDeviceId.set(device.deviceId);
+
+    this.deviceService
+      .assignDevice(device.deviceId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.activeAssignmentDeviceId.set(null);
+          this.refreshDevicesPreservingScroll();
+        },
+        error: () => {
+          this.errorMessage.set('Could not assign this device right now.');
+          this.activeAssignmentDeviceId.set(null);
+        }
+      });
+  }
+
+  unassignDevice(device: Device, event?: Event): void {
+    event?.stopPropagation();
+
+    if (!this.isDeviceAssigned(device) || this.activeAssignmentDeviceId() === device.deviceId) {
+      return;
+    }
+
+    this.errorMessage.set('');
+    this.activeAssignmentDeviceId.set(device.deviceId);
+
+    this.deviceService
+      .unassignDevice(device.deviceId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.activeAssignmentDeviceId.set(null);
+          this.refreshDevicesPreservingScroll();
+        },
+        error: () => {
+          this.errorMessage.set('Could not unassign this device right now.');
+          this.activeAssignmentDeviceId.set(null);
+        }
+      });
+  }
+
+  isBusy(deviceId: string): boolean {
+    return this.activeAssignmentDeviceId() === deviceId;
+  }
+
+  getAssignmentStatus(device: Device): 'Assigned' | 'Available' {
+    return this.isDeviceAssigned(device) ? 'Assigned' : 'Available';
+  }
+
+  isDeviceAssigned(device: Device): boolean {
+    return Boolean(device.assignedUserId || device.assignedUserName?.trim());
+  }
+
+  getAssignedUserDisplay(device: Device): string {
+    const assignedUserName = device.assignedUserName?.trim() ?? '';
+    const assignedUserId = device.assignedUserId?.trim() ?? '';
+
+    if (assignedUserName) {
+      return assignedUserName;
+    }
+
+    if (assignedUserId) {
+      return 'Assigned user (name unavailable)';
+    }
+
+    return 'Unknown user';
+  }
+
+  private refreshDevicesPreservingScroll(): void {
+    const currentScrollY = window.scrollY;
+
+    this.deviceService
+      .getDevices()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.devices.set(data);
+
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: currentScrollY, behavior: 'auto' });
+          });
+        },
+        error: () => {
+          this.errorMessage.set('Could not refresh devices after assignment update.');
         }
       });
   }

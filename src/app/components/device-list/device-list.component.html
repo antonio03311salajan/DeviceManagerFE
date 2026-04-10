@@ -34,18 +34,51 @@
           >
             <div class="device-main">
               <h2>{{ device.name }}</h2>
+              @if (isDeviceAssigned(device)) {
+                <p class="assigned-label">Assigned to: {{ getAssignedUserDisplay(device) }}</p>
+              } @else {
+                <p class="assigned-label">Not assigned</p>
+              }
             </div>
 
             <div class="device-actions">
-              <span class="tag">{{ device.type }}</span>
-              <button
-                type="button"
-                class="ghost-btn danger-btn"
-                (click)="removeDevice(device.deviceId, $event)"
-                [attr.aria-label]="'Remove device ' + device.name"
-              >
-                Remove
-              </button>
+              <div class="device-meta">
+                <span class="tag">{{ device.type }}</span>
+                <span
+                  class="status-badge"
+                  [class.status-assigned]="isDeviceAssigned(device)"
+                  [class.status-available]="!isDeviceAssigned(device)"
+                >
+                  {{ getAssignmentStatus(device) }}
+                </span>
+              </div>
+
+              <div class="device-buttons">
+                <button
+                  type="button"
+                  class="ghost-btn"
+                  (click)="assignDevice(device, $event)"
+                  [disabled]="isDeviceAssigned(device) || isBusy(device.deviceId)"
+                >
+                  {{ isBusy(device.deviceId) ? 'Assigning...' : 'Assign' }}
+                </button>
+                <button
+                  type="button"
+                  class="ghost-btn"
+                  (click)="unassignDevice(device, $event)"
+                  [disabled]="!isDeviceAssigned(device) || isBusy(device.deviceId)"
+                >
+                  {{ isBusy(device.deviceId) ? 'Working...' : 'Unassign' }}
+                </button>
+                <button
+                  type="button"
+                  class="ghost-btn danger-btn"
+                  (click)="removeDevice(device.deviceId, $event)"
+                  [attr.aria-label]="'Remove device ' + device.name"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           </li>
         }
