@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DeviceService } from '../../services/device.service';
 import { Device, DeviceCreate } from '../../models/device.model';
 import { DeviceDetailsModalComponent } from '../device-details-modal/device-details-modal.component';
@@ -16,10 +17,12 @@ import { DeviceFormModalComponent } from '../device-form-modal/device-form-modal
 export class DeviceListComponent {
   private readonly deviceService = inject(DeviceService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly searchInput = new Subject<string>();
 
   readonly devices = signal<Device[]>([]);
   readonly loading = signal(true);
   readonly errorMessage = signal('');
+  readonly searchQuery = signal('');
   readonly selectedDevice = signal<Device | null>(null);
   readonly formMode = signal<'create' | 'edit' | null>(null);
   readonly editingDevice = signal<Device | null>(null);
@@ -27,15 +30,23 @@ export class DeviceListComponent {
   readonly totalDevices = computed(() => this.devices().length);
 
   constructor() {
+    this.searchInput
+      .pipe(debounceTime(2000), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((query) => {
+        this.loadDevices(query);
+      });
+
     this.loadDevices();
   }
 
-  loadDevices(): void {
+  loadDevices(query: string = this.searchQuery()): void {
+    const trimmedQuery = query.trim();
+
     this.loading.set(true);
     this.errorMessage.set('');
 
     this.deviceService
-      .getDevices()
+      .searchDevices(trimmedQuery)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -47,6 +58,13 @@ export class DeviceListComponent {
           this.loading.set(false);
         }
       });
+  }
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const query = input?.value ?? '';
+    this.searchQuery.set(query);
+    this.searchInput.next(query);
   }
 
   addNewDevice(): void {
@@ -214,7 +232,7 @@ export class DeviceListComponent {
     const currentScrollY = window.scrollY;
 
     this.deviceService
-      .getDevices()
+      .searchDevices(this.searchQuery())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
