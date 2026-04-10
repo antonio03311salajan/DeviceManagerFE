@@ -10,6 +10,20 @@
   </header>
 
   <section class="content-card" aria-live="polite">
+    <div class="search-form" role="search" aria-label="Search devices">
+      <label class="search-label" for="device-search">Search devices</label>
+      <div class="search-controls">
+        <input
+          id="device-search"
+          type="text"
+          class="search-input"
+          placeholder="Search by name, type, manufacturer..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+        />
+      </div>
+    </div>
+
     @if (loading()) {
       <p class="state">Loading devices...</p>
     } @else if (errorMessage()) {

@@ -55,6 +55,41 @@
   padding: 0.75rem;
 }
 
+.search-form {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.45rem 0.45rem 0.7rem;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 0.45rem;
+}
+
+.search-label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+.search-controls {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  background: #ffffff;
+  color: var(--text-main);
+}
+
+.search-input:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 1px;
+}
+
 .device-list {
   list-style: none;
   margin: 0;
@@ -244,6 +279,10 @@
 
   .content-card {
     padding: 0.5rem;
+  }
+
+  .search-controls {
+    width: 100%;
   }
 
   .device-item {

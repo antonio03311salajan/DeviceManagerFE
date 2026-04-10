@@ -23,6 +23,18 @@ export class DeviceService {
       .get<Device[]>(this.apiUrl)
   }
 
+  searchDevices(query: string): Observable<Device[]> {
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) {
+      return this.getDevices();
+    }
+
+    return this.http.get<Device[]>(`${this.apiUrl}/search`, {
+      params: { q: trimmedQuery }
+    });
+  }
+
   createDevice(device: DeviceCreate): Observable<Device> {
     return this.http
       .post<Device>(this.apiUrl, device);
