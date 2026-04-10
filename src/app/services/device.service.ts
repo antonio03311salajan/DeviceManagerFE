@@ -7,6 +7,10 @@ type GeneratedDescriptionResponse = {
   generatedDescription: string;
 };
 
+type ActionMessageResponse = {
+  message: string;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -36,6 +40,18 @@ export class DeviceService {
 
   deleteDevice(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  assignDevice(deviceId: string): Observable<string> {
+    return this.http
+      .post<ActionMessageResponse>(`${this.apiUrl}/${deviceId}/assign`, null)
+      .pipe(map((response) => response.message));
+  }
+
+  unassignDevice(deviceId: string): Observable<string> {
+    return this.http
+      .post<ActionMessageResponse>(`${this.apiUrl}/${deviceId}/unassign`, null)
+      .pipe(map((response) => response.message));
   }
 
   private extractGeneratedDescription(response: GeneratedDescriptionResponse): string {

@@ -36,6 +36,14 @@
         <dt>Device ID</dt>
         <dd>{{ device().deviceId }}</dd>
       </div>
+      <div>
+        <dt>Assigned to</dt>
+        <dd>{{ assignedUserDisplay() }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>{{ assignmentStatus() }}</dd>
+      </div>
     </dl>
 
     @if (descriptionToDisplay()) {

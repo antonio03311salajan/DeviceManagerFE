@@ -8,6 +8,8 @@ export interface Device {
   processor: string;
   ram: number | null;
   description: string;
+  assignedUserId?: string | null;
+  assignedUserName?: string | null;
 }
 
 export interface DeviceCreate {
