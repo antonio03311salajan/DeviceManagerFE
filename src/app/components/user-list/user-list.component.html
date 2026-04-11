@@ -1,8 +1,60 @@
 <div class="container">
   <div class="header">
     <h1>Manage Users</h1>
-    <button class="btn-add">Add New User</button>
+    <button class="btn-add" (click)="toggleCreateForm()">
+      {{ showCreateForm ? 'Cancel' : 'Add New User' }}
+    </button>
   </div>
+
+  @if (showCreateForm) {
+    <section class="create-card" aria-label="Create user">
+      <div class="form-grid">
+        <label class="form-field">
+          <span>Name</span>
+          <input
+            type="text"
+            [value]="newUserName"
+            (input)="newUserName = $any($event.target).value"
+            placeholder="User name"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Role</span>
+          <select [value]="newUserRoleId" (change)="newUserRoleId = $any($event.target).value" [disabled]="loadingRoles">
+            <option value="">Select a role</option>
+            @for (role of roles; track role.id) {
+              <option [value]="role.id">{{ role.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Location</span>
+          <input
+            type="text"
+            [value]="newUserLocation"
+            (input)="newUserLocation = $any($event.target).value"
+            placeholder="Office / City"
+          />
+        </label>
+      </div>
+
+      @if (roleError) {
+        <p class="form-error">{{ roleError }}</p>
+      }
+
+      @if (createError) {
+        <p class="form-error">{{ createError }}</p>
+      }
+
+      <div class="form-actions">
+        <button class="btn-add" (click)="createUser()" [disabled]="isSubmitting || loadingRoles">
+          {{ isSubmitting ? 'Saving...' : 'Save User' }}
+        </button>
+      </div>
+    </section>
+  }
 
   @if (loading) {
     <p>Loading users...</p>
