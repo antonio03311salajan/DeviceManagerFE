@@ -1,59 +1,29 @@
-# DeviceMangerFE
+Device Manager UI
+This is the Angular 17 frontend for the Device Manager system. It provides the web interface for users to search the hardware inventory, view AI-generated device details, and check out/assign equipment to themselves.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.6.
+Tech Stack
+Framework: Angular 17+ (using Standalone Components)
 
-## Development server
+Routing/State: Angular Router, RxJS
 
-To start a local development server, run:
+Auth: JWT-based authentication via Angular HTTP Interceptors
 
-```bash
+Prerequisites
+Node.js (v18.x or higher)
+
+Angular CLI (npm install -g @angular/cli)
+
+🚀 Local Setup & Running
+1. Install Dependencies
+Open a terminal in the root of the project and run:
+
+Bash
+npm install
+2. Point to the Local API
+By default, the app expects the .NET backend to be running locally. Check your environment files (or your DeviceService/AuthService) to ensure the API base URL matches your running backend port (usually http://localhost:5133 or https://localhost:7100).
+
+3. Start the Dev Server
+
+Bash
 ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Once the compilation finishes, open your browser and navigate to http://localhost:4200/.
