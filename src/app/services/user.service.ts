@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5133/api/Users';
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:5133/api/Users';
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl);

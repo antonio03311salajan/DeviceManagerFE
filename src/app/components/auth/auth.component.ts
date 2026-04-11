@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { RoleService } from '../../services/role.service';
+import { Role } from '../../models/role.model';
 
 type AuthMode = 'login' | 'register';
 
@@ -14,15 +16,20 @@ type AuthMode = 'login' | 'register';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuthComponent {
-  private formBuilder = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly roleService = inject(RoleService);
+  private readonly router = inject(Router);
 
-  mode = signal<AuthMode>('login');
-  isRegister = computed(() => this.mode() === 'register');
-  loading = signal(false);
-  errorMessage = signal('');
-  successMessage = signal('');
+  readonly mode = signal<AuthMode>('login');
+  readonly isRegister = computed(() => this.mode() === 'register');
+  readonly loading = signal(false);
+  readonly errorMessage = signal('');
+  readonly successMessage = signal('');
+  readonly roles = signal<Role[]>([]);
+  readonly loadingRoles = signal(false);
+  readonly roleLoadError = signal('');
+  private readonly hasLoadedRoles = signal(false);
 
   constructor() {
     if (this.authService.isAuthenticated()) {
@@ -46,6 +53,11 @@ export class AuthComponent {
     this.mode.set(mode);
     this.errorMessage.set('');
     this.successMessage.set('');
+
+    if (mode === 'register') {
+      this.ensureRolesLoaded();
+    }
+
     this.applyModeValidators();
   }
 
@@ -64,10 +76,19 @@ export class AuthComponent {
     this.loading.set(true);
 
     if (this.isRegister()) {
+      const selectedRoleId = this.normalizeRoleId(this.authForm.controls.roleId.value);
+
+      if (!selectedRoleId) {
+        this.errorMessage.set('Please select a valid role.');
+        this.authForm.controls.roleId.markAsTouched();
+        this.loading.set(false);
+        return;
+      }
+
       const registerPayload = {
         name: this.authForm.controls.name.value?.trim() ?? '',
         location: this.authForm.controls.location.value?.trim() ?? '',
-        roleId: this.authForm.controls.roleId.value?.trim() ?? '',
+        roleId: selectedRoleId,
         email: this.authForm.controls.email.value?.trim() ?? '',
         password: this.authForm.controls.password.value ?? ''
       };
@@ -113,6 +134,36 @@ export class AuthComponent {
     });
   }
 
+  retryLoadRoles(): void {
+    this.loadRoles();
+  }
+
+  private ensureRolesLoaded(): void {
+    if (this.hasLoadedRoles() || this.loadingRoles()) {
+      return;
+    }
+
+    this.loadRoles();
+  }
+
+  private loadRoles(): void {
+    this.loadingRoles.set(true);
+    this.roleLoadError.set('');
+
+    this.roleService.getRoles().subscribe({
+      next: (roles) => {
+        this.roles.set(roles);
+        this.hasLoadedRoles.set(true);
+        this.loadingRoles.set(false);
+      },
+      error: (error) => {
+        this.roles.set([]);
+        this.roleLoadError.set(this.extractErrorMessage(error, 'Could not load roles.'));
+        this.loadingRoles.set(false);
+      }
+    });
+  }
+
   private applyModeValidators(): void {
     const nameControl = this.authForm.controls.name;
     const locationControl = this.authForm.controls.location;
@@ -131,6 +182,16 @@ export class AuthComponent {
     nameControl.updateValueAndValidity({ emitEvent: false });
     locationControl.updateValueAndValidity({ emitEvent: false });
     roleIdControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private normalizeRoleId(value: string | null | undefined): string | null {
+    const normalizedValue = value?.trim();
+
+    if (!normalizedValue || normalizedValue === 'undefined' || normalizedValue === 'null') {
+      return null;
+    }
+
+    return normalizedValue;
   }
 
   private extractErrorMessage(error: unknown, fallback: string): string {

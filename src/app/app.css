@@ -1,0 +1,31 @@
+.logout-btn {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 1000;
+	border: 1px solid #ef4444;
+	background: #ffffff;
+	color: #b91c1c;
+	border-radius: 10px;
+	padding: 0.5rem 0.85rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+}
+
+.logout-btn:hover {
+	background: #fef2f2;
+}
+
+.logout-btn:focus-visible {
+	outline: 2px solid #991b1b;
+	outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+	.logout-btn {
+		top: 0.75rem;
+		right: 0.75rem;
+	}
+}

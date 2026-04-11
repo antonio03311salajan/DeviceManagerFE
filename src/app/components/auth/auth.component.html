@@ -43,15 +43,24 @@
         </label>
 
         <label>
-          Role ID (GUID)
-          <input
-            type="text"
-            formControlName="roleId"
-            placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-            autocomplete="off"
-          />
+          Role
+          <select formControlName="roleId" [disabled]="loadingRoles()">
+            <option value="">Select role</option>
+            @for (role of roles(); track role.id) {
+              <option [value]="role.id">{{ role.name }}</option>
+            }
+          </select>
+          @if (loadingRoles()) {
+            <small>Loading roles...</small>
+          }
+          @if (roleLoadError()) {
+            <small>
+              {{ roleLoadError() }}
+              <button type="button" class="inline-link" (click)="retryLoadRoles()">Try again</button>
+            </small>
+          }
           @if (authForm.controls.roleId.touched && authForm.controls.roleId.invalid) {
-            <small>Role ID is required.</small>
+            <small>Role is required.</small>
           }
         </label>
       }
@@ -80,7 +89,7 @@
         <p class="message success">{{ successMessage() }}</p>
       }
 
-      <button type="submit" class="submit-btn" [disabled]="loading()">
+      <button type="submit" class="submit-btn" [disabled]="loading() || (isRegister() && loadingRoles())">
         {{ loading() ? 'Please wait...' : isRegister() ? 'Create Account' : 'Login' }}
       </button>
     </form>
